@@ -95,6 +95,13 @@ age = st.number_input(
     max_value=100,
     value=17
 )
+class12_percentile = st.number_input(
+    "Class 12 percentile",
+    min_value=0.0,
+    max_value=100.0,
+    value=80.0,
+    step=0.1
+)
 
 income = st.selectbox(
     "Approximate annual family income",
@@ -157,6 +164,10 @@ if st.button("🔎 Find My Schemes", use_container_width=True):
 
     if age <= 25:
         reasons.append(f"Age: {age}")
+    else:
+        likely_match = False
+    if class12_percentile > 80:
+        reasons.append(f"Class 12 percentile: {class12_percentile}%")
     else:
         likely_match = False
 
