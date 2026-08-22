@@ -1,4 +1,6 @@
 import streamlit as st
+import pandas as pd
+schemes = pd.read_csv("schemes.csv")
 
 # -----------------------------
 # PAGE SETTINGS
@@ -118,50 +120,74 @@ if st.button("🔎 Find My Schemes", use_container_width=True):
     # Student example
     if need == "Scholarship / Education":
 
-        st.subheader("🎓 Student Scholarship Scheme")
+        # Find scholarship schemes from our CSV
+        scholarship_schemes = schemes[
+            schemes["category"] == "Scholarship / Education"
+        ]
 
-        # Simple rule-based matching
-        likely_match = True
-        reasons = []
+        if not scholarship_schemes.empty:
+            scheme = scholarship_schemes.iloc[0]
 
-        if state == "Other":
-            likely_match = False
-        else:
-            reasons.append(f"State: {state}")
-
-        if age <= 25:
-            reasons.append(f"Age: {age}")
-        else:
-            likely_match = False
-
-        if income in ["Below ₹1 lakh", "₹1–2.5 lakh", "₹2.5–5 lakh"]:
-            reasons.append(f"Income: {income}")
-        else:
-            likely_match = False
-
-        # Result
-        if likely_match:
-
-            st.success("🎓 Likely Match")
+            st.subheader(f"🎓 {scheme['scheme_name']}")
 
             st.write(
-                "Based on the information provided, "
-                "you may fit the basic criteria used by this prototype."
+                "This scheme was found in our structured government-scheme dataset."
             )
 
-            st.markdown("### ✅ Why you may match")
+            st.markdown("### 📋 Eligibility")
+            st.write(scheme["eligibility"])
 
-            for reason in reasons:
-                st.write("•", reason)
+            st.markdown("### 🎁 Benefits")
+            st.write(scheme["benefits"])
 
-        else:
+            st.markdown("### 📄 Documents")
+            st.write(scheme["documents"])
 
-            st.warning("⚠️ Needs Further Verification")
+            st.markdown("### 🔗 Official Source")
+            st.write(scheme["official_url"])
 
-            st.write(
-                "Some of the information provided does not fit "
-                "the basic matching rules used by this prototype."
-            )
+    # Simple rule-based matching
+    likely_match = True
+    reasons = []
+
+    if state == "Other":
+        likely_match = False
+    else:
+        reasons.append(f"State: {state}")
+
+    if age <= 25:
+        reasons.append(f"Age: {age}")
+    else:
+        likely_match = False
+
+    if income in ["Below ₹1 lakh", "₹1–2.5 lakh", "₹2.5–5 lakh"]:
+        reasons.append(f"Income: {income}")
+    else:
+        likely_match = False
+
+    # Result
+    if likely_match:
+
+        st.success("🎓 Likely Match")
+
+        st.write(
+            "Based on the information provided, "
+            "you may fit the basic criteria used by this prototype."
+        )
+
+        st.markdown("### ✅ Why you may match")
+
+        for reason in reasons:
+            st.write("•", reason)
+
+    else:
+
+        st.warning("⚠️ Needs Further Verification")
+
+        st.write(
+            "Some of the information provided does not fit "
+            "the basic matching rules used by this prototype."
+        )
 
         st.markdown("### 📄 Documents you may need")
 
@@ -185,7 +211,7 @@ if st.button("🔎 Find My Schemes", use_container_width=True):
         )
     
     # Farmer example
-    elif need == "Farmer Support":
+    if need == "Farmer Support":
 
         st.success("🌾 We found a possible farmer-support match!")
 
